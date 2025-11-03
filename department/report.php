@@ -250,7 +250,7 @@ if (isset($_GET['export']) && $_GET['export'] === 'excel') {
 </table>
 
 <!-- جدول التوقيعات -->
-<table border="1" cellpadding="10" cellspacing="0" width="100%">
+<table border="0" cellpadding="10" cellspacing="0" width="100%">
     <!-- صف العناوين -->
     <tr class="signature-header">
         <td style="width: 33.33%;">مسؤول العهدة</td>
