@@ -16,6 +16,21 @@ $stmt->bindParam(':id', $department_id);
 $stmt->execute();
 $department = $stmt->fetch(PDO::FETCH_ASSOC);
 
+// جلب الدفعات المستلمة
+$query = "SELECT 
+          bd.amount,
+          bd.distribution_date,
+          bb.batch_number,
+          bb.batch_name
+          FROM budget_distributions bd
+          LEFT JOIN budget_batches bb ON bd.batch_id = bb.id
+          WHERE bd.department_id = :dept_id
+          ORDER BY bd.distribution_date ASC";
+$stmt = $db->prepare($query);
+$stmt->bindParam(':dept_id', $department_id);
+$stmt->execute();
+$distributions = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 // جلب جميع النفقات
 $query = "SELECT e.*, 
           (SELECT COUNT(*) FROM invoices WHERE expense_id = e.id) as invoice_count
@@ -39,6 +54,7 @@ $stmt->execute();
 $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // تصدير إلى Excel
+// تصدير إلى Excel
 if (isset($_GET['export']) && $_GET['export'] === 'excel') {
     header('Content-Type: application/vnd.ms-excel; charset=utf-8');
     header('Content-Disposition: attachment; filename="department_report_' . $department['code'] . '_' . date('Y-m-d') . '.xls"');
@@ -49,15 +65,41 @@ if (isset($_GET['export']) && $_GET['export'] === 'excel') {
     
     echo "<html><head><meta charset='utf-8'></head><body>";
     echo "<table border='1'>";
-    echo "<tr><th colspan='7' style='text-align:center; font-size:18px;'><b>تقرير نفقات قسم " . htmlspecialchars($department['name_ar']) . "</b></th></tr>";
+    echo "<tr><th colspan='7' style='text-align:center; font-size:18px; background:#667eea; color:white;'><b>تقرير نفقات قسم " . htmlspecialchars($department['name_ar']) . "</b></th></tr>";
     echo "<tr><th colspan='7' style='text-align:center;'>تاريخ التقرير: " . date('Y-m-d H:i') . "</th></tr>";
     echo "<tr><td colspan='7'></td></tr>";
     
-    echo "<tr><th>الميزانية المخصصة</th><th colspan='6'>" . number_format($department['allocated_budget'], 2) . " ر.س</th></tr>";
-    echo "<tr><th>إجمالي المصروفات</th><th colspan='6'>" . number_format($department['spent_amount'], 2) . " ر.س</th></tr>";
-    echo "<tr><th>المتبقي</th><th colspan='6'>" . number_format($department['allocated_budget'] - $department['spent_amount'], 2) . " ر.س</th></tr>";
+    // ملخص الميزانية
+    echo "<tr style='background:#f0fdf4;'><th>إجمالي المبالغ المستلمة</th><th colspan='6'>" . number_format($department['total_received'], 2) . " ر.س</th></tr>";
+    echo "<tr style='background:#fef2f2;'><th>إجمالي المصروفات</th><th colspan='6'>" . number_format($department['spent_amount'], 2) . " ر.س</th></tr>";
+    echo "<tr style='background:#fffbeb;'><th>المتبقي</th><th colspan='6'>" . number_format($department['total_received'] - $department['spent_amount'], 2) . " ر.س</th></tr>";
     echo "<tr><td colspan='7'></td></tr>";
     
+    // الدفعات المستلمة
+    if (count($distributions) > 0) {
+        echo "<tr style='background:#10b981; color:white;'><th colspan='7'>الدفعات المالية المستلمة</th></tr>";
+        echo "<tr><th>#</th><th>رقم الدفعة</th><th>اسم الدفعة</th><th>المبلغ</th><th>تاريخ الاستلام</th><th colspan='2'></th></tr>";
+        
+        $counter = 1;
+        $total_dist = 0;
+        foreach ($distributions as $dist) {
+            $total_dist += $dist['amount'];
+            echo "<tr>";
+            echo "<td>$counter</td>";
+            echo "<td>" . htmlspecialchars($dist['batch_number']) . "</td>";
+            echo "<td>" . htmlspecialchars($dist['batch_name']) . "</td>";
+            echo "<td>" . number_format($dist['amount'], 2) . "</td>";
+            echo "<td>" . date('Y-m-d', strtotime($dist['distribution_date'])) . "</td>";
+            echo "<td colspan='2'></td>";
+            echo "</tr>";
+            $counter++;
+        }
+        echo "<tr style='background:#f0fdf4; font-weight:bold;'><td colspan='3'>الإجمالي</td><td>" . number_format($total_dist, 2) . " ر.س</td><td colspan='3'></td></tr>";
+        echo "<tr><td colspan='7'></td></tr>";
+    }
+    
+    // باقي التقرير (النفقات)
+    echo "<tr style='background:#2563eb; color:white;'><th colspan='7'>تفاصيل النفقات</th></tr>";
     echo "<tr><th>التاريخ</th><th>الفئة</th><th>الوصف</th><th>المبلغ</th><th>طريقة الدفع</th><th>المورد</th><th>الملاحظات</th></tr>";
     
     foreach ($expenses as $expense) {
@@ -158,6 +200,55 @@ if (isset($_GET['export']) && $_GET['export'] === 'excel') {
                         </div>
                     </div>
                     
+                    <!-- الدفعات المستلمة -->
+            <?php if (count($distributions) > 0): ?>
+            <div class="card">
+                <div class="card-header" style="background: #10b981; color: white;">
+                    💰 سجل الدفعات المالية المستلمة
+                </div>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead style="background: #f0fdf4;">
+                            <tr>
+                                <th>#</th>
+                                <th>رقم الدفعة</th>
+                                <th>اسم الدفعة</th>
+                                <th>المبلغ</th>
+                                <th>تاريخ الاستلام</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php 
+                            $total_dist = 0;
+                            $counter = 1;
+                            foreach ($distributions as $dist): 
+                                $total_dist += $dist['amount'];
+                            ?>
+                                <tr>
+                                    <td><?php echo $counter++; ?></td>
+                                    <td><strong><?php echo htmlspecialchars($dist['batch_number']); ?></strong></td>
+                                    <td><?php echo htmlspecialchars($dist['batch_name']); ?></td>
+                                    <td style="color: #10b981; font-weight: bold;">
+                                        <?php echo number_format($dist['amount'], 2); ?> ر.س
+                                    </td>
+                                    <td><?php echo date('Y-m-d', strtotime($dist['distribution_date'])); ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                        <tfoot style="background: #f0fdf4; font-weight: bold;">
+                            <tr>
+                                <td colspan="3">إجمالي الدفعات المستلمة</td>
+                                <td style="color: #15803d; font-size: 1.25rem;">
+                                    <?php echo number_format($total_dist, 2); ?> ر.س
+                                </td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+            <?php endif; ?>
+
                     <?php if (count($categories) > 0): ?>
                     <h3 style="margin: 2rem 0 1rem; color: var(--primary-color);">توزيع المصروفات حسب الفئة</h3>
                     <div class="table-responsive">

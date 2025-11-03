@@ -129,6 +129,43 @@ $stats['expense_count'] = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
                 </div>
             </div>
 
+<!-- آخر 3 دفعات -->
+            <?php if (count($distributions) > 0): ?>
+            <div class="card" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; margin-bottom: 2rem;">
+                <div class="card-header" style="border-bottom-color: rgba(255,255,255,0.2); color: white;">
+                    <div class="flex flex-between flex-center">
+                        <span>💰 آخر الدفعات المستلمة</span>
+                        <a href="distributions.php" class="btn" style="background: white; color: #10b981; padding: 0.5rem 1rem;">
+                            عرض الكل
+                        </a>
+                    </div>
+                </div>
+                <div style="padding: 1.5rem;">
+                    <?php 
+                    $recent_distributions = array_slice($distributions, 0, 3);
+                    foreach ($recent_distributions as $dist): 
+                    ?>
+                    <div style="background: rgba(255,255,255,0.1); padding: 1rem; border-radius: 8px; margin-bottom: 1rem; backdrop-filter: blur(10px);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+                            <div>
+                                <div style="font-weight: bold; margin-bottom: 0.25rem;">
+                                    <?php echo htmlspecialchars($dist['batch_name']); ?>
+                                </div>
+                                <div style="font-size: 0.875rem; opacity: 0.9;">
+                                    رقم: <?php echo htmlspecialchars($dist['batch_number']); ?> | 
+                                    <?php echo date('Y-m-d', strtotime($dist['distribution_date'])); ?>
+                                </div>
+                            </div>
+                            <div style="font-size: 1.5rem; font-weight: bold;">
+                                <?php echo number_format($dist['amount'], 2); ?> ر.س
+                            </div>
+                        </div>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+            <?php endif; ?>
+
             <!-- الإحصائيات -->
             <div class="stats-grid">
                 <div class="stat-card success">

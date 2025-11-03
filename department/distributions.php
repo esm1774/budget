@@ -221,6 +221,38 @@ foreach ($distributions as $dist) {
             </div>
             <?php endif; ?>
         </div>
+<!-- رسم بياني بسيط -->
+            <?php if (count($distributions) >= 3): ?>
+            <div class="card">
+                <div class="card-header">الاتجاه الزمني للدفعات</div>
+                <div style="padding: 2rem;">
+                    <div style="display: flex; align-items: flex-end; justify-content: space-around; height: 300px; border-bottom: 2px solid #e5e7eb; gap: 1rem;">
+                        <?php 
+                        $recent_dists = array_slice(array_reverse($distributions), 0, 10);
+                        $max_amount = max(array_column($recent_dists, 'amount'));
+                        
+                        foreach ($recent_dists as $dist):
+                            $height = $max_amount > 0 ? ($dist['amount'] / $max_amount) * 100 : 0;
+                        ?>
+                        <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                            <div style="width: 100%; background: linear-gradient(180deg, #10b981 0%, #059669 100%); border-radius: 8px 8px 0 0; position: relative; height: <?php echo $height; ?>%; min-height: 30px;">
+                                <div style="position: absolute; top: -25px; left: 50%; transform: translateX(-50%); font-size: 0.75rem; font-weight: bold; white-space: nowrap;">
+                                    <?php echo number_format($dist['amount'], 0); ?>
+                                </div>
+                            </div>
+                            <div style="margin-top: 0.5rem; font-size: 0.75rem; text-align: center; color: #6b7280;">
+                                <?php echo date('m/d', strtotime($dist['distribution_date'])); ?>
+                            </div>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                    <div style="text-align: center; margin-top: 1rem; color: #6b7280; font-size: 0.875rem;">
+                        آخر <?php echo count($recent_dists); ?> دفعات
+                    </div>
+                </div>
+            </div>
+            <?php endif; ?>
+
     </main>
 
     <script src="../assets/js/main.js"></script>
