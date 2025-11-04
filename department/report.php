@@ -154,7 +154,7 @@ if (isset($_GET['export']) && $_GET['export'] === 'excel') {
     <!-- معلومات العهدة في الأعلى -->
     <tr>
         <td class="header-info" colspan="5">
-            رقم العهدة: <?php echo $batch_info ? htmlspecialchars($batch_info['batch_number']) : '___________'; ?>
+            رقم العهدة: <?php echo $batch_info ? htmlspecialchars($batch_info['batch_name']) : '___________'; ?>
         </td>
     </tr>
     <tr>
@@ -253,34 +253,29 @@ if (isset($_GET['export']) && $_GET['export'] === 'excel') {
 <table border="0" cellpadding="10" cellspacing="0" width="100%">
     <!-- صف العناوين -->
     <tr class="signature-header">
-        <td style="width: 33.33%;">مسؤول العهدة</td>
-        <td style="width: 33.33%;"></td>
-        <td style="width: 33.33%;">مدير المدرسة</td>
-        <td style="width: 33.33%;"></td>
-        <td style="width: 33.33%;">مدير المجمع</td>
+        <td class="no-border" style="width: 33.33%;">مسؤول العهدة</td>
+        <td class="no-border" style="width: 33.33%;"></td>
+        <td class="no-border" style="width: 33.33%;">مدير المدرسة</td>
+        <td class="no-border" style="width: 33.33%;"></td>
+        <td class="no-border" style="width: 33.33%;">مدير المجمع</td>
     </tr>
     
     <!-- صف الأسماء -->
     <tr>
-        <td style="height: 50px;">
+        <td class="no-border" style="height: 50px;">
             <?php echo htmlspecialchars($department['manager_name'] ?? '___________________'); ?>
         </td>
-        <td></td>
-        <td style="height: 50px;">
+        <td class="no-border"></td>
+        <td class="no-border" style="height: 50px;">
             <?php echo htmlspecialchars($_SESSION['full_name']); ?>
         </td>
-        <td></td>
-        <td style="height: 50px;">
+        <td class="no-border"></td>
+        <td class="no-border" style="height: 50px;">
             سعد بن عبدالله القرني
         </td>
     </tr>
     
-    <!-- صف التوقيعات (فارغ) -->
-    <tr>
-        <td style="height: 60px;">&nbsp;</td>
-        <td style="height: 60px;">&nbsp;</td>
-        <td style="height: 60px;">&nbsp;</td>
-    </tr>
+
 </table>
 
 </body>
@@ -305,28 +300,7 @@ if (isset($_GET['export']) && $_GET['export'] === 'excel') {
     </style>
 </head>
 <body>
-    <header class="header no-print">
-        <div class="container">
-            <nav class="navbar">
-                <div class="logo">💼 <?php echo htmlspecialchars($department['name_ar']); ?></div>
-                <ul class="nav-menu" id="navMenu">
-                    <li><a href="dashboard.php">الرئيسية</a></li>
-                    <li><a href="expenses.php">النفقات</a></li>
-                    <li><a href="distributions.php">الدفعات المستلمة</a></li>
-                    <li><a href="report.php" class="active">التقرير</a></li>
-                </ul>
-                <div class="user-info">
-                    <span>مرحباً، <?php echo htmlspecialchars($_SESSION['full_name']); ?></span>
-                    <a href="../logout.php" class="btn btn-danger">خروج</a>
-                </div>
-                <div class="menu-toggle" onclick="toggleMenu()">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </div>
-            </nav>
-        </div>
-    </header>
+    <?php include '../includes/header.php'; ?>
 
     <main class="main-content">
         <div class="container">

@@ -53,23 +53,7 @@ $department = $stmt->fetch(PDO::FETCH_ASSOC);
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
-    <header class="header">
-        <div class="container">
-            <nav class="navbar">
-                <div class="logo">💼 <?php echo htmlspecialchars($department['name_ar']); ?></div>
-                <ul class="nav-menu" id="navMenu">
-                    <li><a href="dashboard.php">الرئيسية</a></li>
-                    <li><a href="expenses.php">النفقات</a></li>
-                    <li><a href="distributions.php">الدفعات المستلمة</a></li>
-                    <li><a href="report.php">التقرير</a></li>
-                </ul>
-                <div class="user-info">
-                    <span>مرحباً، <?php echo htmlspecialchars($_SESSION['full_name']); ?></span>
-                    <a href="../logout.php" class="btn btn-danger">خروج</a>
-                </div>
-            </nav>
-        </div>
-    </header>
+    <?php include '../includes/header.php'; ?>
 
     <main class="main-content">
         <div class="container">

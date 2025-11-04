@@ -69,29 +69,7 @@ $departments = $stmt->fetchAll(PDO::FETCH_ASSOC);
 </head>
 <body>
     <!-- Header -->
-    <header class="header">
-        <div class="container">
-            <nav class="navbar">
-                <div class="logo">💼 نظام إدارة الميزانيات</div>
-                <ul class="nav-menu" id="navMenu">
-                    <li><a href="dashboard.php">الرئيسية</a></li>
-                    <li><a href="budget_batches.php">الدفعات المالية</a></li>
-                    <li><a href="departments.php">الأقسام</a></li>
-                    <li><a href="expenses.php">نفقات الإدارة</a></li>
-                    <li><a href="reports.php">التقارير</a></li>
-                </ul>
-                <div class="user-info">
-                    <span>مرحباً، <?php echo htmlspecialchars($_SESSION['full_name']); ?></span>
-                    <a href="../logout.php" class="btn btn-danger">خروج</a>
-                </div>
-                <div class="menu-toggle" onclick="toggleMenu()">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </div>
-            </nav>
-        </div>
-    </header>
+    <?php include '../includes/header.php'; ?>
 
     <!-- Main Content -->
     <main class="main-content">

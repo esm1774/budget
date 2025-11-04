@@ -112,29 +112,9 @@ $total_expenses = $stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
-    <header class="header">
-        <div class="container">
-            <nav class="navbar">
-                <div class="logo">💼 نظام إدارة الميزانيات</div>
-                <ul class="nav-menu" id="navMenu">
-                    <li><a href="dashboard.php">الرئيسية</a></li>
-                    <li><a href="budget_batches.php">الدفعات المالية</a></li>
-                    <li><a href="departments.php">الأقسام</a></li>
-                    <li><a href="expenses.php">نفقات الإدارة</a></li>
-                    <li><a href="reports.php">التقارير</a></li>
-                </ul>
-                <div class="user-info">
-                    <span>مرحباً، <?php echo htmlspecialchars($_SESSION['full_name']); ?></span>
-<a href="../logout.php" class="btn btn-danger">خروج</a>
-</div>
-<div class="menu-toggle" onclick="toggleMenu()">
-<span></span>
-<span></span>
-<span></span>
-</div>
-</nav>
-</div>
-</header><main class="main-content">
+    <?php include '../includes/header.php'; ?>
+
+<main class="main-content">
     <div class="container">
         <h1 class="mb-3">نفقات الإدارة</h1>        <?php if ($message): ?>
             <div class="alert alert-success"><?php echo htmlspecialchars($message); ?></div>
