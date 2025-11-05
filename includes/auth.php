@@ -125,5 +125,7 @@ class Auth {
             return array('success' => false, 'message' => 'فشل إنشاء المستخدم');
         }
     }
+
+    
 }
 ?>

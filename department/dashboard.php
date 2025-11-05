@@ -72,17 +72,10 @@ $stmt = $db->prepare($query);
 $stmt->bindParam(':dept_id', $department_id);
 $stmt->execute();
 $stats['expense_count'] = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
+
 ?>
-<!DOCTYPE html>
-<html lang="ar">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة التحكم - <?php echo htmlspecialchars($department['name_ar']); ?></title>
-    <link rel="stylesheet" href="../assets/css/style.css">
-</head>
-<body>
-    <?php include '../includes/header.php'; ?>
+
+    <?php include '../includes/partials/header.php'; ?>
 
     <main class="main-content">
         <div class="container">
@@ -356,5 +349,4 @@ $stats['expense_count'] = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
     </main>
 
     <script src="../assets/js/main.js"></script>
-</body>
-</html>
+<?php include '../includes/footer.php'; ?>

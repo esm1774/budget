@@ -103,15 +103,6 @@ $stmt = $db->prepare($query);
 $stmt->execute();
 $total_expenses = $stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
 ?>
-<!DOCTYPE html>
-<html lang="ar">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نفقات الإدارة</title>
-    <link rel="stylesheet" href="../assets/css/style.css">
-</head>
-<body>
     <?php include '../includes/header.php'; ?>
 
 <main class="main-content">
